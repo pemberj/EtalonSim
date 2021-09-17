@@ -1,14 +1,16 @@
 import os
 import numpy as np
 import astropy.units as u
+
 from matplotlib import pyplot as plt
+from matplotlib import font_manager as fm
 
 from etalonsim.Etalon import Etalon
 from etalonsim.helper import FWHM
 from etalonsim.plotting import jakeStyle
+
+fm.fontManager.addfont(path="./Quicksand_regular.ttf")
 plt.style.use(jakeStyle)
-
-
 
 
 
@@ -46,9 +48,9 @@ def main():
     #ax.set_yticklabels([])
     ax.set_ylim(-0.1, 1.1)
     
-    # plt.show()
+    plt.show()
 
-    plt.savefig(f"plots/{os.path.basename(__file__).split('.')[0]}.png")
+    # plt.savefig(f"plots/{os.path.basename(__file__).split('.')[0]}.png")
 
 
 

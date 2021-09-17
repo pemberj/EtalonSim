@@ -13,7 +13,7 @@ plt.style.use(jakeStyle)
 
 def main():
 
-    mirror_spacing = 6*u.mm #mm
+    mirror_spacing = 6 * u.mm #mm
     round_trip = 2 * mirror_spacing
     round_trip_mm = round_trip.to("mm").value
     num_round_trips = 3000 #number of reflections on the OUTPUT surface

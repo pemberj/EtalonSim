@@ -18,7 +18,9 @@ def main():
     num_round_trips = 100 #number of reflections on the OUTPUT surface
     mirror_reflectivity = 0.95
 
-    Zs = np.arange(0, (num_round_trips)*round_trip_mm, round_trip_mm) * u.mm
+    z0 = 0
+
+    Zs = np.arange(z0, z0+(num_round_trips)*round_trip_mm, round_trip_mm) * u.mm
 
     reflectivity = np.array([mirror_reflectivity**(n) for n in range(1, len(Zs)+1)])
 
@@ -28,12 +30,12 @@ def main():
     fig = plt.figure()
     ax = fig.gca()
 
-    λ = mirror_spacing / int(mirror_spacing / (780*u.nm))
+    λ = (mirror_spacing / int(mirror_spacing / (780*u.nm))).to("nm")
 
     r = 5 * u.mm  # radius at which to evaluate curvature, radial phase
 
     # waist_radii = [2.5, 3, 4, 5, 6] * u.mm
-    waist_radii = np.linspace(0.04, 10, 250) * u.mm
+    waist_radii = np.linspace(0.04, 6, 150) * u.mm
     # Zoom in to close-to-zero region
     # waist_radii = np.linspace(0.05, 1.75, 50) * u.mm
 
@@ -46,9 +48,12 @@ def main():
 
         summed_average_phase_differences.append(np.sum(gouy + radi))
         
-    ax.plot(waist_radii, summed_average_phase_differences)
+    ax.plot(waist_radii, summed_average_phase_differences,
+            label=f"$z_0={z0*u.mm.to('m')}$, $\lambda=${λ:.0f}")
 
     # ax.set_yscale("log")
+
+    ax.legend()
 
     ax.set_xlabel("Beam waist radius, $w_0$ [mm]")
     ax.set_ylabel(f"Sum of average phase\nover {num_round_trips} round trips")

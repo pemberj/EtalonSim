@@ -9,14 +9,12 @@ from cycler import cycler
 #import palettable
 import matplotlib.pyplot as plt
 
+# font_dir = "/home/jake/.local/share/fonts"
+# font_files = fm.findSystemFonts(fontpaths=font_dir)
+# font_list = fm.createFontList(font_files)
+# fm.fontManager.ttflist.extend(font_files)
 
-
-#font_dir = "/home/jake/.fonts/typecatcher"
-#font_files = fm.findSystemFonts(fontpaths=font_dir)
-#font_list = fm.createFontList(font_files)
-#fm.fontManager.ttflist.extend(font_list)
-
-#fm.fontManager.addfont(fm.FontManager, path="./Quicksand_regular.ttf")
+fm.fontManager.addfont(path="./Quicksand_regular.ttf")
 
 # Set the default global line width, referenced several times below.
 lw = 1.3
@@ -86,5 +84,6 @@ jakeStyle = {
     "errorbar.capsize" : 3,
     "hist.bins" : 20,
 }
+
 
 plt.style.use(jakeStyle)
