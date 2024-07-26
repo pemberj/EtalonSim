@@ -56,12 +56,25 @@ def main():
     phases_min *= reflectivity
     phases_max *= reflectivity
     refd = ax.plot(Zs, phases_avg, label="Average phase contribution (scaled by reflection)")
-    ax.fill_between(Zs, phases_min, phases_max, alpha=0.1, color=refd[0].get_color(),
-                    label="Min/max phase")
+    ax.fill_between(
+        Zs.to(u.mm).value,
+        phases_min,
+        phases_max,
+        alpha=0.1,
+        color=refd[0].get_color(),
+        label="Min/max phase"
+        )
 
     summed = np.sum(phases_avg)
-    ax.fill_between(Zs, 0, phases_avg, color=refd[0].get_color(), alpha=0.25, hatch="//",
-                    label=f"Cumulative phase contribution over\n{num_round_trips} round trips: {summed:.2f} cycles")
+    ax.fill_between(
+        Zs.to(u.mm).value,
+        0,
+        phases_avg,
+        color=refd[0].get_color(),
+        alpha=0.25,
+        hatch="//",
+        label=f"Cumulative phase contribution over\n{num_round_trips} round trips: {summed:.2f} cycles"
+        )
 
     # ax.plot(Zs, reflectivity, color="k", ls="--", alpha=0.5, label="Mirror reflection attenuation")
 
@@ -78,8 +91,8 @@ def main():
     # ax.set_ylim(-0.01, 0.01)
     ax.set_xlim(min(Zs).value, max(Zs).value)
 
-    # plt.show()
-    plt.savefig(f"plots/{os.path.basename(__file__).split('.')[0]}.png")
+    plt.show()
+    # plt.savefig(f"plots/{os.path.basename(__file__).split('.')[0]}.png")
 
 
 

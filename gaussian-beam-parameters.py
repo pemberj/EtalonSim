@@ -67,8 +67,8 @@ def main():
     ax.set_xlim(0, max(waist_radii).value)
     ax.set_ylim(-0.05, 1.5)
 
-    # plt.show()
-    plt.savefig(f"plots/{os.path.basename(__file__).split('.')[0]}.png")
+    plt.show()
+    # plt.savefig(f"plots/{os.path.basename(__file__).split('.')[0]}.png")
 
 
 

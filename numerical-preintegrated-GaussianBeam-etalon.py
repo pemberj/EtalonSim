@@ -55,16 +55,17 @@ def main():
     peak_fwhm = np.diff(FWHM(λs.to("pm").value, values))[0] * u.pm
     calculated_finesse = distance_between_peaks/peak_fwhm
 
-    ax.plot(λs, values, label=f"Calculated finesse: {calculated_finesse:.1f}")
+    ax.plot(λs.to(u.nm).value, values, label=f"Calculated finesse: {calculated_finesse:.1f}")
     ax.set_title("Gaussian beam illumination")
     ax.set_xlabel("Wavelength (nm)")
     #ax.set_yticklabels([])
-    ax.set_ylim(-0.1, 1.1)
+    ax.set_xlim(min(λs).to(u.nm).value, max(λs).to(u.nm).value)
+    ax.set_ylim(0, 1)
 
     ax.legend()
 
-    # plt.show()
-    plt.savefig(f"plots/{os.path.basename(__file__).split('.')[0]}.png")
+    plt.show()
+    # plt.savefig(f"plots/{os.path.basename(__file__).split('.')[0]}.png")
 
 
 if __name__ == "__main__":

@@ -48,8 +48,15 @@ def main():
         G = ax.plot(0, 0)
         ax.plot(Zs, np.abs(gouy), color=G[0].get_color(), ls="--")
         ax.plot(Zs, np.abs(radi), color=G[0].get_color(), ls="-.")
-        ax.fill_between(Zs, np.abs(gouy), np.abs(radi), color=G[0].get_color(),
-                        alpha=0.25, hatch="//", label=f"$w_0=${w_0} ($z_R\\approx${beam.z_R:.0f})")
+        ax.fill_between(
+            Zs.to(u.mm).value,
+            np.abs(gouy.to(u.rad).value),
+            np.abs(radi.to(u.rad).value),
+            color=G[0].get_color(),
+            alpha=0.25,
+            hatch="//",
+            label=f"$w_0=${w_0} ($z_R\\approx${beam.z_R:.0f})"
+            )
 
     ax.plot(0, 0, color="k", alpha=0.75, ls="--", label="Gouy phase")
     ax.plot(0, 0, color="k", alpha=0.75, ls="-.", label="radial phase (absolute)")
@@ -60,9 +67,9 @@ def main():
     ax.set_ylabel("average phase [cycles]")
 
     ax.legend()
-    # plt.show()
+    plt.show()
 
-    plt.savefig(f"plots/{os.path.basename(__file__).split('.')[0]}.png")
+    # plt.savefig(f"plots/{os.path.basename(__file__).split('.')[0]}.png")
 
 
 

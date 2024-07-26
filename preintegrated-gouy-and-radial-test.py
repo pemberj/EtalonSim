@@ -43,8 +43,8 @@ def main():
     ax.plot(Zs, radi, label="Radial phase")
     # ax.plot(Zs, gouy + radi)
 
-    # plt.show()
-    plt.savefig(f"plots/{os.path.basename(__file__).split('.')[0]}.png")
+    plt.show()
+    # plt.savefig(f"plots/{os.path.basename(__file__).split('.')[0]}.png")
 
 
 

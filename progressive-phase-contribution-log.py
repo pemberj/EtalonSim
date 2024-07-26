@@ -56,8 +56,14 @@ def main():
     refd = ax.plot(Zs, np.abs(phases_avg), label="After reflection")
 
     summed = np.abs(np.sum(phases_avg))
-    ax.fill_between(Zs, 0, np.abs(phases_avg), color=refd[0].get_color(), alpha=0.25,
-                    label=f"Cumulative phase over\n{num_round_trips} round trips: {summed:.2f} cycles")
+    ax.fill_between(
+        Zs.to(u.mm).value,
+        0,
+        np.abs(phases_avg),
+        color=refd[0].get_color(),
+        alpha=0.25,
+        label=f"Cumulative phase over\n{num_round_trips} round trips: {summed:.2f} cycles"
+        )
 
     ax.axhline(y=0, color="k", ls="--", alpha=0.25)
     ax.plot(Zs, reflectivity, color="k", ls="--", alpha=0.5, label="Mirror reflection attenuation")
@@ -78,8 +84,8 @@ def main():
     # ax.set_ylim(-0.01, 0.01)
     ax.set_xlim(min(Zs).value, max(Zs).value)
 
-    # plt.show()
-    plt.savefig(f"plots/{os.path.basename(__file__).split('.')[0]}.png")
+    plt.show()
+    # plt.savefig(f"plots/{os.path.basename(__file__).split('.')[0]}.png")
 
 
 

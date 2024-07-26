@@ -85,8 +85,8 @@ def main():
     ax.set_ylim(-0.05, 1.1)
     ax.legend()
 
-    # plt.show()
-    plt.savefig(f"plots/{os.path.basename(__file__).split('.')[0]}.png")
+    plt.show()
+    # plt.savefig(f"plots/{os.path.basename(__file__).split('.')[0]}.png")
     
 
 

@@ -40,7 +40,7 @@ def main():
 
     # I want to define the Gaussian beam for each wavelength based on an f-number rather than the
     # beam waist. The beam waist for a beam of the same f/# is different for each wavelength.
-    f_number = 6
+    f_number = 10
 
     mirror_spacing = 25.4 * u.mm # 1 inch beamsplitter cube
     num_round_trips = 50 # even 3 reflections gets very low power left indeed, here I go overboard
@@ -96,8 +96,8 @@ def main():
     ax.set_xlim(min(λs).value, max(λs).value)
     # ax.legend()
 
-    # plt.show()
-    plt.savefig(f"plots/{os.path.basename(__file__).split('.')[0]}.png")
+    plt.show()
+    # plt.savefig(f"plots/{os.path.basename(__file__).split('.')[0]}.png")
 
 
 

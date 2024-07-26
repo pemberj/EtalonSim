@@ -29,8 +29,8 @@ def main():
     ax.set_ylim(-0.1, 1.1)
     ax.set_xlim(min(λs).value, max(λs).value)
     
-    # plt.show()
-    plt.savefig(f"plots/{os.path.basename(__file__).split('.')[0]}.png")
+    plt.show()
+    # plt.savefig(f"plots/{os.path.basename(__file__).split('.')[0]}.png")
     
 
 

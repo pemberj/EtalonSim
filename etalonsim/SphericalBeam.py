@@ -30,6 +30,9 @@ class SphericalBeam():
 
         x, y, z = x.to("mm").value, y.to("mm").value, z.to("mm").value
         
+        if isinstance(z, int| float):
+            z = np.ones_like(x) * z
+        
         # length of vectors x,y,z
         rho_unitless = np.sqrt(np.sum(np.array([x, y, z])**2, axis=0))
         k_scalar_unitless = self.k_scalar.to("1/mm").value
@@ -49,7 +52,7 @@ def test():
 
     xi = np.linspace(-10*u.mm, 10*u.mm, 200)
     yi = np.linspace(-10*u.mm, 10*u.mm, 200)
-    x,y = np.meshgrid(xi, yi)
+    x, y = np.meshgrid(xi, yi)
 
     plt.imshow(np.real(beam1.E_field(x=x, y=y, z=1*u.mm) * np.conj(beam1.E_field(x=x, y=y, z=1*u.mm))))
     plt.show()

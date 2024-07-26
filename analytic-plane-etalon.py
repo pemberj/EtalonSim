@@ -35,7 +35,7 @@ def main():
     intensity = np.real(etalon.intensity(λs))
     peak_fwhm = np.diff(FWHM(λs.to("pm").value, intensity))[0] * u.pm
 
-    ax.plot(λs, intensity / np.max(intensity), label="Analytic\nreflection-limited peak\n"\
+    ax.plot(λs.to("pm").value, intensity / np.max(intensity), label="Analytic\nreflection-limited peak\n"\
                                                    +f"FWHM={peak_fwhm:.4f}")
 
     print("Finesse calculated from FWHM and Δλ:", etalon.delta_lambda / peak_fwhm)
@@ -44,7 +44,8 @@ def main():
     
     ax.legend()
     ax.set_title("Plane-wave illumination (analytic description)")
-    ax.set_xlabel("Wavelength (nm)")
+    ax.set_xlim(min(λs).to("pm").value, max(λs).to("pm").value)
+    ax.set_xlabel("Wavelength (pm)")
     #ax.set_yticklabels([])
     ax.set_ylim(-0.1, 1.1)
     

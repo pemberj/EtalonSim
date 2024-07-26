@@ -58,8 +58,8 @@ def main():
     ax.set_xlabel("Beam waist radius, $w_0$ [mm]")
     ax.set_ylabel(f"Sum of average phase\nover {num_round_trips} round trips")
 
-    # plt.show()
-    plt.savefig(f"plots/{os.path.basename(__file__).split('.')[0]}.png")
+    plt.show()
+    # plt.savefig(f"plots/{os.path.basename(__file__).split('.')[0]}.png")
 
 
 if __name__ == "__main__":

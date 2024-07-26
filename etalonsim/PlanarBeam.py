@@ -30,6 +30,10 @@ class PlanarBeam():
 
         x, y, z = x.to("mm").value, y.to("mm").value, z.to("mm").value
         
+        if isinstance(x, float | int) & isinstance(y, float | int) == 1:
+            x = [x] * len(z)
+            y = [y] * len(z)
+        
         # Position vector r
         r_unitless = np.array([x, y, z])
         # r = r_unitless * u.mm

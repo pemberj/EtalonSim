@@ -33,7 +33,7 @@ def main():
 
     c = 6e-3 / 7692 * 1e9
     w = 0.005
-    λs = np.linspace(c - w/2, c + w/2, 101) * u.nm
+    λs = np.linspace(c - w/2, c + w/2, 201) * u.nm
 
     output = []
 
@@ -64,8 +64,8 @@ def main():
 
     ax.legend()
 
-    # plt.show()
-    plt.savefig(f"plots/{os.path.basename(__file__).split('.')[0]}.png")
+    plt.show()
+    # plt.savefig(f"plots/{os.path.basename(__file__).split('.')[0]}.png")
 
 
 if __name__ == "__main__":

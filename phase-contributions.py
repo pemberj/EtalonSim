@@ -49,8 +49,8 @@ def main():
     ax.set_xlabel(f"Propagation distance z [mm], {num_round_trips} round trips")
     ax.set_ylabel("Phase offset [cycles]")
 
-    # plt.show()
-    plt.savefig(f"plots/{os.path.basename(__file__).split('.')[0]}.png")
+    plt.show()
+    # plt.savefig(f"plots/{os.path.basename(__file__).split('.')[0]}.png")
 
 
 
