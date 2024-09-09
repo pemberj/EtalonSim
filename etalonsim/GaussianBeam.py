@@ -277,7 +277,7 @@ class GaussianBeam():
         ret = self.E_0 * (self.w_0 / self.w(z)) * np.exp(-1j * self.longitudinal_phase(z))
 
         try:
-            if "gouy phase" not in exclude.lower():
+            if "gouy" not in exclude.lower():
                 if debug_level > 0: print("Including Gouy phase")
                 ret *= np.exp(1j * self.Gouy_phase(z))
 

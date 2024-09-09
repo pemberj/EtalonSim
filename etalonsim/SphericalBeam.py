@@ -1,4 +1,5 @@
 import numpy as np
+from numpy.typing import ArrayLike
 import astropy.units as u
 import pprint
 pp = pprint.PrettyPrinter(indent=4)
@@ -32,6 +33,10 @@ class SphericalBeam():
         
         if isinstance(z, int| float):
             z = np.ones_like(x) * z
+            
+        if isinstance(x, float | int) & isinstance(y, float | int) == 1:
+            x = [x] * len(z)
+            y = [y] * len(z)
         
         # length of vectors x,y,z
         rho_unitless = np.sqrt(np.sum(np.array([x, y, z])**2, axis=0))
@@ -48,16 +53,20 @@ def test():
     from plotting import jakeStyle
     plt.style.use(jakeStyle)
 
-    beam1 = SphericalBeam(λ=633*u.nm, E_0=1, n=1, plane_normal=(0,0,1), debug_level=0)
 
-    xi = np.linspace(-10*u.mm, 10*u.mm, 200)
-    yi = np.linspace(-10*u.mm, 10*u.mm, 200)
+    xi = np.linspace(-10*u.um, 10*u.um, 500)
+    yi = np.linspace(-10*u.um, 10*u.um, 500)
     x, y = np.meshgrid(xi, yi)
 
-    plt.imshow(np.real(beam1.E_field(x=x, y=y, z=1*u.mm) * np.conj(beam1.E_field(x=x, y=y, z=1*u.mm))))
-    plt.show()
-
-    beam2 = SphericalBeam(λ=632*u.nm, E_0=1, n=1, plane_normal=(0,0,1), debug_level=0)
+    beam1 = SphericalBeam(λ=633*u.nm, E_0=1, n=1, plane_normal=(0,0,1), debug_level=0)
+    
+    fig = plt.figure()
+    ax = fig.gca()
+    ax.set_title("The electric field amplitude for a single z-slice")
+    ax.imshow(np.real(beam1.E_field(x=x, y=y, z=1*u.um) * np.conj(beam1.E_field(x=x, y=y, z=1*u.mm))))
+    
+    # Create a second beam at slightly different wavelength
+    beam2 = SphericalBeam(λ=630*u.nm, E_0=1, n=1, plane_normal=(0,0,1), debug_level=0)
     Zs = np.linspace(0, 0.2, 1400) * u.mm
     Es = beam1.E_field(z=Zs) + beam2.E_field(z=Zs)
     Is = np.real(Es * np.conj(Es))
@@ -65,9 +74,13 @@ def test():
     # Don't use round numbers for this plot
     plt.rcParams["axes.autolimit_mode"] = "data"
 
-    plt.plot(Zs, np.real(Es), alpha=0.25)
-    plt.plot(Zs, np.imag(Es), alpha=0.25)
-    plt.plot(Zs, Is)
+    fig = plt.figure()
+    ax = fig.gca()
+    ax.set_title("Real and imaginary parts of the electric field amplitude,\nand the beam intensity as a function of z-distance")
+    ax.plot(Zs, np.real(Es), alpha=0.25)
+    ax.plot(Zs, np.imag(Es), alpha=0.25)
+    ax.plot(Zs, Is)
+    
     plt.show()
 
 
