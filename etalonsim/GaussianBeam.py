@@ -5,64 +5,50 @@ Dependencies: numpy, astropy (for units), matplotlib (for plots)
 """
 
 import numpy as np
+from numpy.typing import ArrayLike
 import astropy.units as u
+from astropy.units import Quantity
+from dataclasses import dataclass
 
 
+@dataclass
 class GaussianBeam():
     """
     """
 
+    λ: Quantity = 633 * u.nm
+    E_0: float = 1
+    n: float = 1
+    w_0: Quantity = 10 * u.um
+    debug_level: int | float = 0
+    
 
-    def __init__(self, λ=633*u.nm, E_0=1, w_0=10*u.um, n=1, debug_level=0):
-        """
-        Args:
-            E_0 (int, optional): [description]. Defaults to 1.
-            w_0 ([type], optional): [description]. Defaults to 10*u.um.
-            n (int, optional): [description]. Defaults to 1.
-            debug_level (int, optional): [description]. Defaults to 0.
-        """
-
-        self.debug_level = debug_level
-
-        self.λ = λ.si
-        self.E_0 = E_0
-        self.w_0 = w_0.si
-        self.n = n
-
-        if debug_level > 0:
+    def __post_init__(self) -> None:
+        if self.debug_level > 0:
             for p, val in self.__dict__.items():
                 print(f"{p}: {val}")
 
-    @property
-    def k(self):
-        """
-        k, wavenumber
-        """
 
+    @property
+    def k(self) -> float:
+        # k, wavenumber
         return ((2 * np.pi * self.n) / self.λ).si
 
-    @property
-    def z_R(self):
-        """
-        z_R, Rayleigh range, sometimes z_0
-        (not to be confused with a distance to the beam waist)
-        """
 
+    @property
+    def z_R(self) -> Quantity:
+        # z_R, Rayleigh range, sometimes z_0
+        # (not to be confused with a distance to the beam waist)
         return ((np.pi * self.n * self.w_0**2) / self.λ).si
 
 
-    def q(self, z=0*u.mm):
-        """
-        q, complex beam parameter
-        """
-
+    def q(self, z: Quantity = 0 * u.mm) -> float:
+        # q, complex beam parameter
         return z + 1j * self.z_R
 
 
-    def w_squared(self, z=0*u.mm):
-        """
-        Square of the beam width
-        """
+    def w_squared(self, z: Quantity = 0 * u.mm) -> Quantity:
+        # Square of the beam width
 
         _z = (z / self.z_R).si
 
@@ -73,11 +59,12 @@ class GaussianBeam():
         return (self.w_0**2 * (1 + (_z)**2)).si
 
 
-    def w(self, z=0*u.mm):
+    def w(self, z: Quantity = 0*u.mm):
         """
         w, beam width
-        Defined as the radius at which the field amplitudes fall to 1/e of their axial values
-        (i.e., where the intensity values fall to 1/e2 of their axial values)
+        Defined as the radius at which the field amplitudes fall to 1/e of their
+        axial values (i.e., where the intensity values fall to 1/e2 of their
+        axial values)
         """
 
         if self.debug_level > 0:
@@ -86,10 +73,8 @@ class GaussianBeam():
         return np.sqrt(self.w_squared(z)).si
 
 
-    def R(self, z=0*u.mm):
-        """
-        R, radius of curvature of the wavefront
-        """
+    def R(self, z: Quantity = 0*u.mm):
+        # R, radius of curvature of the wavefront
 
         _z = (self.z_R / z).si
 
@@ -104,18 +89,16 @@ class GaussianBeam():
         return R
 
 
-    def curvature(self, z=0*u.mm):
-        """
-        Curvature of the wavefront at a distance z from the beam waist
-        """
+    def curvature(self, z: Quantity = 0 * u.mm) -> Quantity:
+        # Curvature of the wavefront at a distance z from the beam waist
 
         return 1 / self.R(z)
     
 
-    def sag(self, z=0*u.mm, D=4*u.mm):
+    def sag(self, z: Quantity = 0 * u.mm, D: Quantity = 4 * u.mm) -> Quantity:
         """
-        Returns the sag (sagitta) between the wavefront at a distance z from the beam waist and at
-        a diameter D from the propagation axis
+        Returns the sag (sagitta) between the wavefront at a distance z from the
+        beam waist and at a diameter D from the propagation axis
 
         Modified definition to avoid a singularity at z=0, infinite radius
         """
@@ -125,7 +108,13 @@ class GaussianBeam():
         return R - np.sign(R) * np.sqrt(R**2 - (D/2)**2)
 
 
-    def amplitude(self, r=None, x=0*u.mm, y=0*u.mm, z=0*u.mm):
+    def amplitude(
+        self,
+        r: Quantity | None = None,
+        x: Quantity = 0 * u.mm,
+        y: Quantity = 0 * u.mm,
+        z: Quantity = 0 * u.mm,
+        ) -> float:
         """
         The amplitude of the electric field at the given coordinates
         """
@@ -137,7 +126,7 @@ class GaussianBeam():
         return self.E_0 * (self.w_0 / self.w(z)).si * np.exp((-r**2 / (self.w_squared(z))).si)
 
 
-    def Gouy_phase(self, z=0*u.mm):
+    def Gouy_phase(self, z: Quantity = 0 * u.mm,) -> float:
         """
         The Gouy phase at a distance z from the beam waist
         """
@@ -148,7 +137,7 @@ class GaussianBeam():
         return np.arctan((z / self.z_R).si) / u.radian
 
 
-    def longitudinal_phase(self, z=0*u.mm):
+    def longitudinal_phase(self, z: Quantity = 0 * u.mm,) -> float:
         """
         The longitudinal phase of the E field at a distance z from the beam waist
         """
@@ -156,7 +145,13 @@ class GaussianBeam():
         return (self.k * z).si
 
 
-    def radial_phase(self, r=None, x=0*u.mm, y=0*u.mm, z=0*u.mm):
+    def radial_phase(
+        self,
+        r: Quantity | None = None,
+        x: Quantity = 0 * u.mm,
+        y: Quantity = 0 * u.mm,
+        z: Quantity = 0 * u.mm
+        ) -> float:
         """
         The radial phase of the E field at the given coordinates
         """
@@ -168,18 +163,33 @@ class GaussianBeam():
         return (self.k.si * (r**2).si) / (2 * self.R(z).si)
 
 
-    def E_field(self, x=0*u.mm, y=0*u.mm, z=0*u.mm):
+    def E_field(
+        self,
+        x: Quantity = 0 * u.mm,
+        y: Quantity = 0 * u.mm,
+        z: Quantity = 0 * u.mm
+        ) -> ArrayLike:
         """
-        Returns the complex E field of the wave, encoding amplitude and phase, at the given coordinates
+        Returns the complex E field of the wave, encoding amplitude and phase,
+        at the given coordinates
         """
 
-        return self.amplitude(x, y, z) * np.exp(-1j * (self.longitudinal_phase(z)\
-                                                    + self.radial_phase(x, y, z)\
-                                                    - self.Gouy_phase(z)))
+        return self.amplitude(x, y, z)\
+            * np.exp(-1j * (
+                self.longitudinal_phase(z)\
+              + self.radial_phase(x, y, z)\
+              - self.Gouy_phase(z)
+              ))
 
 
-
-    def E_field_partial(self, r=None, x=0*u.mm, y=0*u.mm, z=0*u.mm, include="amplitude longitudinal"):
+    def E_field_partial(
+        self,
+        r: Quantity | None = None,
+        x: Quantity = 0 * u.mm,
+        y: Quantity = 0 * u.mm,
+        z: Quantity = 0 * u.mm,
+        include="amplitude longitudinal"
+        ) -> ArrayLike:
         """
         A function to construct partial Gaussian beams, for instance including only Gouy phase or
         only radial phase, for inspection of the contributions of each phase component, while taking
@@ -187,9 +197,7 @@ class GaussianBeam():
 
         Args:
             r, radius from the optical axis in units of length. Defaults to None.
-            x ([type], optional): [description]. Defaults to 0*u.mm.
-            y ([type], optional): [description]. Defaults to 0*u.mm.
-            z ([type], optional): [description]. Defaults to 0*u.mm.
+            Coordinates x, y, z
             include (str, optional): [description]. Defaults to "amplitude longitudinal".
         """
 
@@ -219,14 +227,18 @@ class GaussianBeam():
         return E
 
 
-
-    def E_gouy_integrated(self, r=np.inf, z=0*u.mm):
+    def E_gouy_integrated(
+        self,
+        r: Quantity | float = np.inf,
+        z: Quantity = 0 * u.mm) -> float:
         """
-        A function that returns the E-field incorporating only the Gouy phase component integrated
-        from r=0 to the given r in the plane a given distance z from the beam waist.
+        A function that returns the E-field incorporating only the Gouy phase
+        component integrated from r=0 to the given r in the plane a given
+        distance z from the beam waist.
         """
 
-        ret = self.E_0 * self.w_0 * self.w(z=z) * np.pi * np.exp(1j * self.Gouy_phase(z=z))
+        ret = self.E_0 * self.w_0 * self.w(z=z)\
+            * np.pi * np.exp(1j * self.Gouy_phase(z=z))
 
         if np.isinf(r):
             return ret
@@ -237,11 +249,14 @@ class GaussianBeam():
             return ret
 
 
-
-    def E_radial_integrated(self, r=np.inf, z=0*u.mm):
+    def E_radial_integrated(
+        self,
+        r: Quantity | float = np.inf,
+        z: Quantity = 0 * u.mm) -> float:
         """
-        A function that returns the E-field incorporating only the radial phase component integrated
-        from r=0 to the given radius r in the plane a given distance z from the beam waist.
+        A function that returns the E-field incorporating only the radial phase
+        component integrated from r=0 to the given radius r in the plane a given
+        distance z from the beam waist.
         """
 
         ret = self.E_0 * (self.w_0 / self.w(z=z)) * np.pi\
@@ -258,23 +273,26 @@ class GaussianBeam():
             return ret
 
 
-
-
-
-
-
-    def summed_E_field(self, z=0*u.mm, exclude="none", debug_level=0):
+    def summed_E_field(
+        self,
+        z: Quantity = 0 * u.mm,
+        exclude: str = "none",
+        debug_level: float | int = 0
+        ) -> ArrayLike:
         """
-        For a beam symmetric about the optical axis. Integrating over r from 0 to infinity gives the
-        summed (inegrated) E field across a plane at z. Used for calculating the interference of
-        full waves in devices like a Fabry-Perot etalon.
+        For a beam symmetric about the optical axis. Integrating over r from 0
+        to infinity gives the summed (inegrated) E field across a plane at z.
+        Used for calculating the interference of full waves in devices like a
+        Fabry-Perot etalon.
         """
 
         A = ((u.m**2 / self.w(z)**2) + 1j*((self.k * u.m**2) / (2 * self.R(z))))
         integral_over_r = np.pi / A
 
-        # baseline result, including only the amplitude and longitudinal phase, ie. a plane wave beam
-        ret = self.E_0 * (self.w_0 / self.w(z)) * np.exp(-1j * self.longitudinal_phase(z))
+        # baseline result, including only the amplitude and longitudinal phase,
+        # ie. a plane wave beam
+        ret = self.E_0 * (self.w_0 / self.w(z))\
+            * np.exp(-1j * self.longitudinal_phase(z))
 
         try:
             if "gouy" not in exclude.lower():
@@ -284,7 +302,9 @@ class GaussianBeam():
             else: print("Returning results without Gouy phase...")
 
             if "radial" not in exclude.lower():
-                if debug_level > 0: print("Including radial effects (wavefront curvature, intensity variations)")
+                if debug_level > 0:
+                    print("Including radial effects (wavefront curvature, "+\
+                          "intensity variations)")
                 ret *= integral_over_r
 
             else: print("Returning results with no radial effects...")

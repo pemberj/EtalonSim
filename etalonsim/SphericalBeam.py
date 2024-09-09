@@ -1,37 +1,49 @@
+"""
+"""
+
 import numpy as np
 from numpy.typing import ArrayLike
 import astropy.units as u
+from astropy.units import Quantity
+from dataclasses import dataclass
+
 import pprint
 pp = pprint.PrettyPrinter(indent=4)
 
+
+@dataclass
 class SphericalBeam():
     """
     An implementation of a very simple spherical electromagnetic wave
     """
-
-    def __init__(self, λ=633*u.nm, E_0=1, n=1, plane_normal=(0,0,1), debug_level=0):
-
-        self.λ = λ
-        self.E_0 = E_0
-        self.n = n
-        self.plane_normal = plane_normal
-        self.debug_level = debug_level
-        
-        self.k_scalar = (2* np.pi / λ) * np.linalg.norm(self.plane_normal)
+    
+    λ: Quantity = 633 * u.nm
+    E_0: int | float = 1
+    n: int | float = 1
+    plane_normal: ArrayLike = (0,0,1)
+    debug_level: int | float = 0
+    
+    def __post_init__(self) -> None:
+        self.k_scalar = (2* np.pi / self.λ) * np.linalg.norm(self.plane_normal)
         self.k_vector = self.k_scalar * self.plane_normal
 
-        if debug_level > 0:
+        if self.debug_level > 0:
             pp.pprint(self.__dict__)
+    
 
-
-    def E_field(self, x=0*u.mm, y=0*u.mm, z=0*u.mm):
+    def E_field(
+        self,
+        x: Quantity = 0 * u.mm,
+        y: Quantity = 0 * u.mm,
+        z: Quantity = 0 * u.mm,
+        ) -> ArrayLike:
         """
         https://en.wikipedia.org/wiki/Electromagnetic_wave_equation
         """
 
         x, y, z = x.to("mm").value, y.to("mm").value, z.to("mm").value
         
-        if isinstance(z, int| float):
+        if isinstance(z, float | int):
             z = np.ones_like(x) * z
             
         if isinstance(x, float | int) & isinstance(y, float | int) == 1:
@@ -43,6 +55,19 @@ class SphericalBeam():
         k_scalar_unitless = self.k_scalar.to("1/mm").value
 
         return self.E_0 * np.exp(-1j * k_scalar_unitless * rho_unitless)
+    
+
+    def summed_E_field(
+        self,
+        z: Quantity | ArrayLike,
+        ) -> np.complex128 | ArrayLike:
+        """
+        Sum the electric field for a range of z-values
+        """
+
+        Es = self.E_field(z=z)
+        return Es
+        return np.sum(Es, axis=0)
 
 
 
