@@ -123,7 +123,8 @@ class GaussianBeam():
         else:
             r = r.si
 
-        return self.E_0 * (self.w_0 / self.w(z)).si * np.exp((-r**2 / (self.w_squared(z))).si)
+        return self.E_0 * (self.w_0 / self.w(z)).si\
+             * np.exp((-r**2 / (self.w_squared(z))).si)
 
 
     def Gouy_phase(self, z: Quantity = 0 * u.mm,) -> float:
@@ -139,7 +140,8 @@ class GaussianBeam():
 
     def longitudinal_phase(self, z: Quantity = 0 * u.mm,) -> float:
         """
-        The longitudinal phase of the E field at a distance z from the beam waist
+        The longitudinal phase of the E field at a distance z from the beam
+        waist
         """
 
         return (self.k * z).si
@@ -191,14 +193,15 @@ class GaussianBeam():
         include="amplitude longitudinal"
         ) -> ArrayLike:
         """
-        A function to construct partial Gaussian beams, for instance including only Gouy phase or
-        only radial phase, for inspection of the contributions of each phase component, while taking
-        in to account the amplitude variations of these contributions.
+        A function to construct partial Gaussian beams, for instance including
+        only Gouy phase or only radial phase, for inspection of the
+        contributions of each phase component, while taking in to account the
+        amplitude variations of these contributions.
 
         Args:
-            r, radius from the optical axis in units of length. Defaults to None.
+            r, radius from the optical axis in units of length. Defaults to None
             Coordinates x, y, z
-            include (str, optional): [description]. Defaults to "amplitude longitudinal".
+            include: string of aspects to include "amplitude longitudinal"
         """
 
         if r is None:
